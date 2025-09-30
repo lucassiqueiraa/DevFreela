@@ -6,5 +6,17 @@ namespace DevFreela.API.Controllers
     [ApiController]
     public class SkillsController : ControllerBase
     {
+        //GET api/skills
+        [HttpGet]
+        public IActionResult GetAll(){
+            return Ok();
+        }
+
+        //POST api/skills
+        [HttpPost]
+        public IActionResult Post()
+        {
+            return Ok();
+        }
     }
 }

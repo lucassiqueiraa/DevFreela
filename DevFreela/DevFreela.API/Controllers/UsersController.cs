@@ -7,5 +7,11 @@ namespace DevFreela.API.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
+        //POST api/users
+        [HttpPost]
+        public IActionResult Post()
+        {
+            return Ok();
+        }
     }
 }
