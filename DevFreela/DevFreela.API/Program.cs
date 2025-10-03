@@ -1,4 +1,6 @@
+using DevFreela.API.ExceptionHandler;
 using DevFreela.API.Models;
+using DevFreela.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +8,24 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<FreelanceTotalCostConfig>(
     builder.Configuration.GetSection("FreelanceTotalCostConfig"));
+
+
+builder.Services.AddScoped<IConfigService, ConfigService>();
+
+builder.Services.AddExceptionHandler<ApiExceptionHandler>();
+builder.Services.AddProblemDetails();
+
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -21,7 +41,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+//app.UseExceptionHandler();
+
 app.UseHttpsRedirection();
+
+app.UseCors("AllowAll");
 
 app.UseAuthorization();
 
