@@ -1,4 +1,5 @@
-﻿using DevFreela.API.Entities;
+﻿
+using DevFreela.API.Entities;
 
 namespace DevFreela.API.Models
 {
