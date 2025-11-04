@@ -1,7 +1,7 @@
 ﻿
-using DevFreela.API.Entities;
+using DevFreela.Core.Entities;
 
-namespace DevFreela.API.Models
+namespace DevFreela.Application.Models
 {
     public class ProjectItemViewModel
     {
