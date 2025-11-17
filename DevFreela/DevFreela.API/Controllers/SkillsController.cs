@@ -1,4 +1,5 @@
 ﻿using DevFreela.Application.Models;
+using DevFreela.Application.Services;
 using DevFreela.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,36 +9,53 @@ namespace DevFreela.API.Controllers
     [ApiController]
     public class SkillsController : ControllerBase
     {
-        private readonly DevFreelaDbContext _dbContext;
+        private readonly ISkillService _service;
 
-        public SkillsController(DevFreelaDbContext context)
+        public SkillsController(ISkillService service)
         {
-           _dbContext = context;
+           _service = service;
         }
 
         //GET api/skills
         [HttpGet]
         public IActionResult GetAll()
         {
-            var skills = _dbContext.Skills.ToList();
+            var result = _service.GetAllSkill();
 
-            var models = skills
-                .Select(SkillViewModel.FromEntity)
-                .ToList();
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Message);
+            }
 
-            return Ok(models);
+            return Ok(result);
+        }
+
+        //GET api/skills/234
+        [HttpGet]
+        public IActionResult GetById(int id)
+        {
+            var result = _service.GetById(id);
+
+            if (!result.IsSuccess)
+            {
+                return NotFound(result.Message);
+            }
+
+            return Ok(result);
         }
 
         //POST api/skills
         [HttpPost]
         public IActionResult Post(CreateSkillInputModel model)
         {
-            var skill = model.ToEntity();
+            var result = _service.Insert(model);
 
-            _dbContext.Skills.Add(skill);
-            _dbContext.SaveChanges();
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Message);
+            }
 
-            return NoContent();
+            return CreatedAtAction(nameof(GetById), new {id = result.Data}, result);
         }
     }
 }
