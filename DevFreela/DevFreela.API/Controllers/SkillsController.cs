@@ -31,7 +31,7 @@ namespace DevFreela.API.Controllers
         }
 
         //GET api/skills/234
-        [HttpGet]
+        [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
             var result = _service.GetById(id);
