@@ -6,15 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DevFreela.Application.Commands.StartProject
+namespace DevFreela.Application.Queries.Skills.GetSkillById
 {
-    public class StartProjectCommand : IRequest<ResultViewModel>
+    public class GetSkillByIdQuery : IRequest<ResultViewModel<SkillViewModel>>
     {
-        public StartProjectCommand(int id)
+        public GetSkillByIdQuery(int id)
         {
             Id = id;
         }
-        public int Id { get; set; }
-
+        public int Id { get; private set; }
     }
 }
