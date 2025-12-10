@@ -17,12 +17,10 @@ namespace DevFreela.API.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly IUserService _service;
 
         private readonly IMediator _mediator;
-        public UsersController (IUserService service, IMediator mediator)
+        public UsersController (IMediator mediator)
         {
-            _service = service;
             _mediator = mediator;
         }
 
@@ -56,7 +54,6 @@ namespace DevFreela.API.Controllers
         [HttpPost("{id}/skills")]
         public async Task<IActionResult> PostSkill(int id, UserSkillsInputModel model)
         {
-            
             var result = await _mediator.Send(new InsertUserSkillCommand(id, model.SkillIds));
 
             if (!result.IsSuccess)
