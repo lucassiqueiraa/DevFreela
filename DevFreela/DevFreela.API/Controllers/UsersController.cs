@@ -1,9 +1,15 @@
-﻿using DevFreela.Application.Models;
+﻿using DevFreela.Application.Commands.Skills.InsertSkill;
+using DevFreela.Application.Commands.Users.InsertUser;
+using DevFreela.Application.Commands.Users.InsertUserSkill;
+using DevFreela.Application.Models;
+using DevFreela.Application.Queries.Users.GetUserById;
 using DevFreela.Application.Services;
 using DevFreela.Core.Entities;
 using DevFreela.Infrastructure.Persistence;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace DevFreela.API.Controllers
 {
@@ -11,17 +17,17 @@ namespace DevFreela.API.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly IUserService _service;
 
-        public UsersController (IUserService service)
+        private readonly IMediator _mediator;
+        public UsersController (IMediator mediator)
         {
-            _service = service;
+            _mediator = mediator;
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> GetByIdAsync(int id)
         {
-            var result = _service.GetById(id);
+            var result = await _mediator.Send(new GetUserByIdQuery(id));
 
             if(!result.IsSuccess)
             {
@@ -33,24 +39,24 @@ namespace DevFreela.API.Controllers
 
         //POST api/users
         [HttpPost]
-        public IActionResult Post(CreateUserInputModel model)
+        public async Task<IActionResult> PostAsync(InsertUserCommand command)
         {
-            var result = _service.Insert(model);
+            var result = await _mediator.Send(command);
 
             if(!result.IsSuccess)
             {
                 return BadRequest(result.Message);
             }
 
-            return CreatedAtAction(nameof(GetById), new { id = result.Data }, result);
+            return CreatedAtAction(nameof(GetByIdAsync), new { id = result.Data }, result);
         }
 
         [HttpPost("{id}/skills")]
-        public IActionResult PostSkill(int id, UserSkillsInputModel model)
+        public async Task<IActionResult> PostSkill(int id, UserSkillsInputModel model)
         {
-            var result = _service.InsertSkill(id, model);
+            var result = await _mediator.Send(new InsertUserSkillCommand(id, model.SkillIds));
 
-            if(!result.IsSuccess)
+            if (!result.IsSuccess)
             {
                 return BadRequest(result.Message);
             }

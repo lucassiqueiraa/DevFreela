@@ -1,7 +1,12 @@
-﻿using DevFreela.Application.Models;
+﻿using DevFreela.Application.Commands.Skills.InsertSkill;
+using DevFreela.Application.Models;
+using DevFreela.Application.Queries.Skills.GetAllSkill;
+using DevFreela.Application.Queries.Skills.GetSkillById;
 using DevFreela.Application.Services;
 using DevFreela.Infrastructure.Persistence;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace DevFreela.API.Controllers
 {
@@ -9,18 +14,18 @@ namespace DevFreela.API.Controllers
     [ApiController]
     public class SkillsController : ControllerBase
     {
-        private readonly ISkillService _service;
+        private readonly IMediator _mediator;
 
-        public SkillsController(ISkillService service)
+        public SkillsController(ISkillService service, IMediator mediator)
         {
-           _service = service;
+           _mediator = mediator;
         }
 
         //GET api/skills
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var result = _service.GetAllSkill();
+            var result = await _mediator.Send(new GetAllSkillQuery());
 
             if (!result.IsSuccess)
             {
@@ -31,10 +36,10 @@ namespace DevFreela.API.Controllers
         }
 
         //GET api/skills/234
-        [HttpGet]
-        public IActionResult GetById(int id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
         {
-            var result = _service.GetById(id);
+            var result = await _mediator.Send(new GetSkillByIdQuery(id));
 
             if (!result.IsSuccess)
             {
@@ -46,9 +51,9 @@ namespace DevFreela.API.Controllers
 
         //POST api/skills
         [HttpPost]
-        public IActionResult Post(CreateSkillInputModel model)
+        public async Task<IActionResult> Post(InsertSkillCommand command)
         {
-            var result = _service.Insert(model);
+            var result = await _mediator.Send(command);
 
             if (!result.IsSuccess)
             {
