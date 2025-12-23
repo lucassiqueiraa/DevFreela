@@ -1,5 +1,6 @@
 ﻿using DevFreela.Application.Models;
 using DevFreela.Application.Notification.ProjectCreated;
+using DevFreela.Core.Repositories;
 using DevFreela.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -13,21 +14,20 @@ namespace DevFreela.Application.Commands.Projects.InsertProject
 {
     public class InsertProjectHandler : IRequestHandler<InsertProjectCommand, ResultViewModel<int>>
     {
-        private readonly DevFreelaDbContext _dbContext;
+        private readonly IProjectRepository _repository;
         private readonly IMediator _mediator;
 
 
-        public InsertProjectHandler(DevFreelaDbContext context, IMediator mediator)
+        public InsertProjectHandler(IProjectRepository repository, IMediator mediator)
         {
-            _dbContext = context;
+            _repository = repository;
             _mediator = mediator;
-        }
+        } 
         public async Task<ResultViewModel<int>> Handle(InsertProjectCommand request, CancellationToken cancellationToken)
         {
             var project = request.ToEntity();
 
-            await _dbContext.Projects.AddAsync(project);
-            await _dbContext.SaveChangesAsync();
+            await _repository.Add(project);
 
             var projectCreated = new ProjectCreatedNotification(project.Id, project.Title, project.TotalCost);
             await _mediator.Publish(projectCreated);
