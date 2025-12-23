@@ -7,10 +7,10 @@ namespace DevFreela.Core.Repositories
         Task<List<Project>> GetAllAsync(string Search, int Page, int Size);
         Task<Project?> GetDetailsByIdAsync(int id);
         Task<Project?> GetByIdAsync(int id);
-        Task<int> Add(Project project);
-        Task Update(Project project);
-        Task AddComment(ProjectComment comment);
-        Task<bool> Exists(int id);
+        Task<int> AddAsync(Project project);
+        Task UpdateAsync(Project project);
+        Task AddCommentAsync(ProjectComment comment);
+        Task<bool> ExistsAsync(int id);
 
 
     }

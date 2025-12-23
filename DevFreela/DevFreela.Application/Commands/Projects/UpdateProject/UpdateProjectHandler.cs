@@ -30,7 +30,7 @@ namespace DevFreela.Application.Commands.Projects.UpdateProject
 
             project.Update(request.Title, request.Description, request.TotalCost);
 
-            await _repository.Update(project);
+            await _repository.UpdateAsync(project);
 
             return ResultViewModel.Success();
         }

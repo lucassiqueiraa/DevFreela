@@ -24,7 +24,7 @@ namespace DevFreela.Application.Commands.Projects.DeleteProject
             }
 
             project.SetAsDeleted();
-            await _repository.Update(project);
+            await _repository.UpdateAsync(project);
 
             return ResultViewModel.Success();
         }

@@ -18,7 +18,7 @@ namespace DevFreela.Application.Commands.Projects.InsertComment
 
         public async Task<ResultViewModel> Handle(InsertCommentCommand request, CancellationToken cancellationToken)
         {
-            var exists = await _repository.Exists(request.IdProject);
+            var exists = await _repository.ExistsAsync(request.IdProject);
 
             if (!exists)
             {
@@ -27,7 +27,7 @@ namespace DevFreela.Application.Commands.Projects.InsertComment
 
             var comment = request.ToEntity();
 
-            await _repository.AddComment(comment);
+            await _repository.AddCommentAsync(comment);
 
             return ResultViewModel.Success();
         }

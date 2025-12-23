@@ -27,7 +27,7 @@ namespace DevFreela.Application.Commands.Projects.InsertProject
         {
             var project = request.ToEntity();
 
-            await _repository.Add(project);
+            await _repository.AddAsync(project);
 
             var projectCreated = new ProjectCreatedNotification(project.Id, project.Title, project.TotalCost);
             await _mediator.Publish(projectCreated);

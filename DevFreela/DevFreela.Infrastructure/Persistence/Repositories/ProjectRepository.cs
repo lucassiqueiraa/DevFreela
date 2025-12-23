@@ -18,7 +18,7 @@ namespace DevFreela.Infrastructure.Persistence.Repositories
         {
             _context = dbContext;
         }
-        public async Task<int> Add(Project project)
+        public async Task<int> AddAsync(Project project)
         {
             await _context.Projects.AddAsync(project);
             await _context.SaveChangesAsync();
@@ -26,13 +26,13 @@ namespace DevFreela.Infrastructure.Persistence.Repositories
             return project.Id;
         }
 
-        public async Task AddComment(ProjectComment comment)
+        public async Task AddCommentAsync(ProjectComment comment)
         {
             await _context.ProjectComments.AddAsync(comment);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> Exists(int id)
+        public async Task<bool> ExistsAsync(int id)
         {
             return await _context.Projects.AnyAsync(p => p.Id == id);
         }
@@ -68,7 +68,7 @@ namespace DevFreela.Infrastructure.Persistence.Repositories
 
         }
 
-        public async Task Update(Project project)
+        public async Task UpdateAsync(Project project)
         {
             _context.Projects.Update(project);
             await _context.SaveChangesAsync();
