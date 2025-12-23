@@ -23,7 +23,7 @@ namespace DevFreela.Application.Commands.Projects.CompleteProject
             }
 
             project.Complete();
-            await _repository.Update(project);
+            await _repository.UpdateAsync(project);
 
             return ResultViewModel.Success();
         }
