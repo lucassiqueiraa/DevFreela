@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace DevFreela.Application.Queries.Projects.GetAllProject
 {
 
-    public class GetAllProjectsQuery : IRequest<ResultViewModel<List<ProjectItemViewModel>>>
+    public class GetAllProjectsQuery : IRequest<Result<List<ProjectItemViewModel>>>
     {
         public GetAllProjectsQuery(string search = "", int page = 0, int size = 3) 
         { 
@@ -20,7 +20,7 @@ namespace DevFreela.Application.Queries.Projects.GetAllProject
             Size = size;
         }
         public string Search { get; set; }
-        public int Page { get; set; } = 0;
-        public int Size { get; set; } = 3;
+        public int Page { get; set; }
+        public int Size { get; set; }
     }
 }

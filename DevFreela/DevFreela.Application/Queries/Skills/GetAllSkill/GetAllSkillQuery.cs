@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DevFreela.Application.Queries.Skills.GetAllSkill
 {
-    public class GetAllSkillQuery : IRequest<ResultViewModel<List<SkillViewModel>>>
+    public class GetAllSkillQuery : IRequest<Result<List<SkillViewModel>>>
     {
     }
 }

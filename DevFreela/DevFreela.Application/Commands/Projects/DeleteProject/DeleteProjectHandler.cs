@@ -7,26 +7,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DevFreela.Application.Commands.Projects.DeleteProject
 {
-    public class DeleteProjectHandler : IRequestHandler<DeleteProjectCommand, ResultViewModel>
+    public class DeleteProjectHandler : IRequestHandler<DeleteProjectCommand, Result>
     {
         private readonly IProjectRepository _repository;
         public DeleteProjectHandler(IProjectRepository repository)
         {
             _repository = repository;
         }
-        public async Task<ResultViewModel> Handle(DeleteProjectCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(DeleteProjectCommand request, CancellationToken cancellationToken)
         {
             var project = await _repository.GetByIdAsync(request.Id);
 
             if (project is null)
             {
-                return ResultViewModel.Error("Projeto não encontrado.");
+                return Result.Failure(ErrorType.NotFound, "Projeto não encontrado.");
             }
 
             project.SetAsDeleted();
             await _repository.UpdateAsync(project);
 
-            return ResultViewModel.Success();
+            return Result.Success();
         }
     }
 }

@@ -13,6 +13,7 @@ using DevFreela.Application.Commands.Projects.CompleteProject;
 using DevFreela.Application.Commands.Projects.InsertProject;
 using DevFreela.Application.Commands.Projects.InsertComment;
 using DevFreela.Application.Commands.Projects.UpdateProject;
+using System.Reflection.Metadata.Ecma335;
 
 namespace DevFreela.API.Controllers
 {
@@ -34,7 +35,16 @@ namespace DevFreela.API.Controllers
 
             var result = await _mediator.Send(query);
 
-            return Ok(result);
+            if(result.IsSuccess)
+            {
+                return Ok(result.Data);
+            }
+
+            return result.Error switch
+            {
+                { Code: ErrorType.Validation } => BadRequest(result.Error.Description),
+                _ => StatusCode(500, result.Error?.Description)
+            };
         }
 
         //GET api/projects/1234
@@ -43,12 +53,19 @@ namespace DevFreela.API.Controllers
         {
             var result = await _mediator.Send(new GetProjectByIdQuery(id));
 
-            if (!result.IsSuccess)
+            if(result.IsSuccess)
             {
-                return BadRequest(result.Message);
+                return Ok(result.Data);
             }
 
-            return Ok(result);
+
+            return result.Error switch
+            {
+                { Code: ErrorType.NotFound } => NotFound(result.Error.Description),
+                { Code: ErrorType.Validation } => BadRequest(result.Error.Description),
+                { Code: ErrorType.Conflict } => Conflict(result.Error.Description),     
+                _ => StatusCode(500, result.Error?.Description)
+            };
         }
 
         //POST api/projects
@@ -58,12 +75,17 @@ namespace DevFreela.API.Controllers
             var result = await _mediator.Send(command);
 
 
-            if (!result.IsSuccess)
+            if (result.IsSuccess)
             {
-                return BadRequest(result.Message);
+                return CreatedAtAction(nameof(GetById), new { id = result.Data }, result);
             }
 
-            return CreatedAtAction(nameof(GetById), new { id = result.Data }, result);
+            return result.Error switch
+            {
+                { Code: ErrorType.Validation } => BadRequest(result.Error.Description),
+                { Code: ErrorType.NotFound } => NotFound(result.Error.Description),
+                _ => StatusCode(500, result.Error?.Description)
+            };
         }
 
         //PUT api/projects/1234
@@ -72,12 +94,17 @@ namespace DevFreela.API.Controllers
         {
             var result = await _mediator.Send(command);
 
-            if (!result.IsSuccess)
+            if (result.IsSuccess)
             {
-                return BadRequest(result.Message);
+                return NoContent();
             }
 
-            return NoContent();
+            return result.Error switch
+            {
+                { Code: ErrorType.NotFound } => NotFound(result.Error.Description),
+                { Code: ErrorType.Validation } => BadRequest(result.Error.Description),
+                _ => StatusCode(500, result.Error?.Description)
+            };
         }
 
         //DELETE api/projects/1234
@@ -86,12 +113,17 @@ namespace DevFreela.API.Controllers
         {
             var result = await _mediator.Send(new DeleteProjectCommand(id));
 
-            if (!result.IsSuccess)
+            if (result.IsSuccess)
             {
-                return BadRequest(result.Message);
+                return NoContent();
             }
 
-            return NoContent();
+            return result.Error switch
+            {
+                { Code: ErrorType.NotFound } => NotFound(result.Error.Description),
+                { Code: ErrorType.Validation } => BadRequest(result.Error.Description),
+                _ => StatusCode(500, result.Error?.Description)
+            };
         }
 
         //PUT api/projects/1234/start
@@ -100,12 +132,17 @@ namespace DevFreela.API.Controllers
         {
             var result = await _mediator.Send(new StartProjectCommand(id));
 
-            if (!result.IsSuccess)
+            if (result.IsSuccess)
             {
-                return BadRequest(result.Message);
+                return NoContent();
             }
 
-            return NoContent();
+            return result.Error switch
+            {
+                { Code: ErrorType.NotFound } => NotFound(result.Error.Description),
+                { Code: ErrorType.Validation } => BadRequest(result.Error.Description),
+                _ => StatusCode(500, result.Error?.Description)
+            };
         }
 
         //PUT api/projects/complete
@@ -114,12 +151,18 @@ namespace DevFreela.API.Controllers
         {
             var result = await _mediator.Send(new CompleteProjectCommand(id));
 
-            if (!result.IsSuccess)
+            if (result.IsSuccess)
             {
-                return BadRequest(result.Message);
+                return NoContent();
+
             }
 
-            return NoContent();
+            return result.Error switch
+            {
+                { Code: ErrorType.NotFound } => NotFound(result.Error.Description),
+                { Code: ErrorType.Validation } => BadRequest(result.Error.Description),
+                _ => StatusCode(500, result.Error?.Description)
+            };
         }
 
         //POST api/projects/1234/comments
@@ -129,12 +172,18 @@ namespace DevFreela.API.Controllers
             command.IdProject = id;
             var result = await _mediator.Send(command);
 
-            if (!result.IsSuccess)
+            //TODO: retornar o comentário criado com o seu ID
+            if (result.IsSuccess)
             {
-                return BadRequest(result.Message);
+                return NoContent();
             }
 
-            return NoContent(); 
+            return result.Error switch
+            {
+                { Code: ErrorType.NotFound } => NotFound(result.Error.Description),
+                { Code: ErrorType.Validation } => BadRequest(result.Error.Description),
+                _ => StatusCode(500, result.Error?.Description)
+            };
         }
     }
 }

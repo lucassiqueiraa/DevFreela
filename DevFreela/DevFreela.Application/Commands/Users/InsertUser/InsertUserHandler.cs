@@ -9,21 +9,21 @@ using System.Threading.Tasks;
 
 namespace DevFreela.Application.Commands.Users.InsertUser
 {
-    public class InsertUserHandler : IRequestHandler<InsertUserCommand, ResultViewModel<int>>
+    public class InsertUserHandler : IRequestHandler<InsertUserCommand, Result<int>>
     {
         private readonly DevFreelaDbContext _dbContext;
         public InsertUserHandler(DevFreelaDbContext context) 
         { 
             _dbContext = context;
         }
-        public async Task<ResultViewModel<int>> Handle(InsertUserCommand request, CancellationToken cancellationToken)
+        public async Task<Result<int>> Handle(InsertUserCommand request, CancellationToken cancellationToken)
         {
             var user = request.ToEntity();
 
             await _dbContext.Users.AddAsync(user);
             await _dbContext.SaveChangesAsync();
 
-            return ResultViewModel<int>.Success(user.Id);
+            return Result<int>.Success(user.Id);
 
         }
     }

@@ -35,7 +35,7 @@ namespace DevFreela.Application
             services.AddMediatR(config =>             
                 config.RegisterServicesFromAssemblyContaining<InsertProjectCommand>());
 
-            services.AddTransient<IPipelineBehavior<InsertProjectCommand, ResultViewModel<int>>, ValidateInsertProjectCommandBehavior>();
+            services.AddTransient<IPipelineBehavior<InsertProjectCommand, Result<int>>, ValidateInsertProjectCommandBehavior>();
 
             return services;
          

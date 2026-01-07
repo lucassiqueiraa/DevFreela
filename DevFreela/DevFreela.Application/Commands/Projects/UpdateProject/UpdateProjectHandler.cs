@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace DevFreela.Application.Commands.Projects.UpdateProject
 {
-    public class UpdateProjectHandler : IRequestHandler<UpdateProjectCommand, ResultViewModel>
+    public class UpdateProjectHandler : IRequestHandler<UpdateProjectCommand, Result>
     {
         private readonly IProjectRepository _repository;
         public UpdateProjectHandler(IProjectRepository repository)
@@ -19,20 +19,20 @@ namespace DevFreela.Application.Commands.Projects.UpdateProject
             _repository = repository;
 
         }
-        public async Task<ResultViewModel> Handle(UpdateProjectCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(UpdateProjectCommand request, CancellationToken cancellationToken)
         {
             var project = await _repository.GetByIdAsync(request.IdProject);
 
             if (project is null)
             {
-                return ResultViewModel.Error("Projeto não encontrado.");
+                return Result.Failure(ErrorType.NotFound, "Projeto não encontrado.");
             }
 
             project.Update(request.Title, request.Description, request.TotalCost);
 
             await _repository.UpdateAsync(project);
 
-            return ResultViewModel.Success();
+            return Result.Success();
         }
     }
 }

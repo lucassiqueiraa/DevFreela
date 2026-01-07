@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DevFreela.Application.Commands.Users.InsertUser
 {
-    public class InsertUserCommand : IRequest<ResultViewModel<int>>
+    public class InsertUserCommand : IRequest<Result<int>>
     {
         public string FullName { get; private set; }
         public string Email { get; private set; }

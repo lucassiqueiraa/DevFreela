@@ -16,7 +16,7 @@ namespace DevFreela.Application.Services
         {
             _dbContext = context;
         }
-        public ResultViewModel<List<SkillViewModel>> GetAllSkill()
+        public Result<List<SkillViewModel>> GetAllSkill()
         {
             var skills = _dbContext.Skills.ToList();
 
@@ -25,31 +25,31 @@ namespace DevFreela.Application.Services
                 .FromEntity)
                 .ToList();
 
-            return ResultViewModel<List<SkillViewModel>>.Success(models);
+            return Result<List<SkillViewModel>>.Success(models);
         }
 
-        public ResultViewModel<SkillViewModel> GetById(int id)
+        public Result<SkillViewModel> GetById(int id)
         {
             var skill = _dbContext.Skills.SingleOrDefault(s => s.Id == id);
 
             if (skill is null)
             {
-                return ResultViewModel<SkillViewModel>.Error("Skill não encontrada.");
+                return Result<SkillViewModel>.Failure(ErrorType.NotFound, "skill não encontrada.");
             }
 
             var model = SkillViewModel.FromEntity(skill);
 
-            return ResultViewModel<SkillViewModel>.Success(model);
+            return Result<SkillViewModel>.Success(model);
         }
 
-        public ResultViewModel<int> Insert(CreateSkillInputModel model)
+        public Result<int> Insert(CreateSkillInputModel model)
         {
             var skill = model.ToEntity();
 
             _dbContext.Skills.Add(skill);
             _dbContext.SaveChanges();
 
-            return ResultViewModel<int>.Success(skill.Id);
+            return Result<int>.Success(skill.Id);
         }
     }
 }

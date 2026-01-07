@@ -12,5 +12,7 @@ namespace DevFreela.Core.Repositories
         Task<int> AddSkillAsync(Skill skill);
         Task<List<Skill>> GetAllAsync();
         Task<Skill?> GetByIdAsync(int id);
+        Task<bool> ExistsByDescription(string description);
+        Task<int> GetExistingSkillsCountAsync(int[] skillIds);
     }
 }

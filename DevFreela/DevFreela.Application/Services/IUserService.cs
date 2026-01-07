@@ -9,8 +9,8 @@ namespace DevFreela.Application.Services
 {
     public interface IUserService
     {
-        public ResultViewModel<UserViewModel> GetById(int id);
-        public ResultViewModel<int> Insert(CreateUserInputModel model);
-        public ResultViewModel<int> InsertSkill(int userId, UserSkillsInputModel model);
+        public Result<UserViewModel> GetById(int id);
+        public Result<int> Insert(CreateUserInputModel model);
+        public Result<int> InsertSkill(int userId, UserSkillsInputModel model);
     }
 }

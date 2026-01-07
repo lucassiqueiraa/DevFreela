@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DevFreela.Application.Commands.Projects.StartProject
 {
-    public class StartProjectCommand : IRequest<ResultViewModel>
+    public class StartProjectCommand : IRequest<Result>
     {
         public StartProjectCommand(int id)
         {

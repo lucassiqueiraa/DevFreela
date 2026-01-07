@@ -11,26 +11,26 @@ using System.Threading.Tasks;
 
 namespace DevFreela.Application.Commands.Projects.StartProject
 {
-    public class StartProjectHandler : IRequestHandler<StartProjectCommand, ResultViewModel>
+    public class StartProjectHandler : IRequestHandler<StartProjectCommand, Result>
     {
         private readonly IProjectRepository _repository;
         public StartProjectHandler(IProjectRepository repository)
         {
             _repository = repository;
         }
-        public async Task<ResultViewModel> Handle(StartProjectCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(StartProjectCommand request, CancellationToken cancellationToken)
         {
             var project= await _repository.GetByIdAsync(request.Id);
 
             if (project is null)
             {
-                return ResultViewModel.Error("Projeto não encontrado.");
+                return Result.Failure(ErrorType.NotFound, "Projeto não encontrado.");
             }
 
             project.Start();
             await _repository.UpdateAsync(project);
 
-            return ResultViewModel.Success();
+            return Result.Success();
         }
     }
 }

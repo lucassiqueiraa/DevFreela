@@ -3,7 +3,7 @@ using MediatR;
 
 namespace DevFreela.Application.Commands.Projects.DeleteProject
 {
-    public class DeleteProjectCommand : IRequest<ResultViewModel>
+    public class DeleteProjectCommand : IRequest<Result>
     {
         public DeleteProjectCommand(int id)
         {

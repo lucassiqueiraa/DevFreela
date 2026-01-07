@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DevFreela.Application.Commands.Users.InsertUserSkill
 {
-    public class InsertUserSkillCommand : IRequest<ResultViewModel<int>>
+    public class InsertUserSkillCommand : IRequest<Result<int>>
     {
         public InsertUserSkillCommand(int userId, int[] skillIds)
         {

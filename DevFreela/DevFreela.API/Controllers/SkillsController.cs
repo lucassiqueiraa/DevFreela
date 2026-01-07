@@ -27,12 +27,16 @@ namespace DevFreela.API.Controllers
         {
             var result = await _mediator.Send(new GetAllSkillQuery());
 
-            if (!result.IsSuccess)
+            if (result.IsSuccess)
             {
-                return BadRequest(result.Message);
+                return Ok(result);
             }
 
-            return Ok(result);
+            return result.Error switch
+            {
+                { Code: ErrorType.Validation } => BadRequest(result.Error.Description),
+                _ => StatusCode(500, result.Error?.Description)
+            };
         }
 
         //GET api/skills/234
@@ -41,12 +45,17 @@ namespace DevFreela.API.Controllers
         {
             var result = await _mediator.Send(new GetSkillByIdQuery(id));
 
-            if (!result.IsSuccess)
+            if (result.IsSuccess)
             {
-                return NotFound(result.Message);
+                return Ok(result);
             }
 
-            return Ok(result);
+            return result.Error switch
+            {
+                { Code: ErrorType.NotFound } => NotFound(result.Error.Description),
+                _ => StatusCode(500, result.Error?.Description)
+            };
+           
         }
 
         //POST api/skills
@@ -55,12 +64,17 @@ namespace DevFreela.API.Controllers
         {
             var result = await _mediator.Send(command);
 
-            if (!result.IsSuccess)
+            if (result.IsSuccess)
             {
-                return BadRequest(result.Message);
+                return CreatedAtAction(nameof(GetById), new { id = result.Data }, result);
             }
 
-            return CreatedAtAction(nameof(GetById), new {id = result.Data}, result);
+            return result.Error switch
+            {
+                { Code : ErrorType.Conflict } => Conflict(result.Error.Description),
+                { Code: ErrorType.Validation } => BadRequest(result.Error.Description),
+                _ => StatusCode(500, result.Error?.Description)
+            };
         }
     }
 }

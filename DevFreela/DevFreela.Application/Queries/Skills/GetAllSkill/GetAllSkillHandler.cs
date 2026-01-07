@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace DevFreela.Application.Queries.Skills.GetAllSkill
 {
-    public class GetAllSkillHandler : IRequestHandler<GetAllSkillQuery, ResultViewModel<List<SkillViewModel>>>
+    public class GetAllSkillHandler : IRequestHandler<GetAllSkillQuery, Result<List<SkillViewModel>>>
     {
         private readonly ISkillRepository _repository;
 
@@ -19,13 +19,13 @@ namespace DevFreela.Application.Queries.Skills.GetAllSkill
         {
             _repository = repository;
         }
-        public async Task<ResultViewModel<List<SkillViewModel>>> Handle(GetAllSkillQuery request, CancellationToken cancellationToken)
+        public async Task<Result<List<SkillViewModel>>> Handle(GetAllSkillQuery request, CancellationToken cancellationToken)
         {
             var skills = await _repository.GetAllAsync();
 
             var model = skills.Select(SkillViewModel.FromEntity).ToList();
 
-            return ResultViewModel<List<SkillViewModel>>.Success(model);
+            return Result<List<SkillViewModel>>.Success(model);
         }
     }
 }

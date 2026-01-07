@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DevFreela.Application.Commands.Projects.UpdateProject
 {
-    public class UpdateProjectCommand : IRequest<ResultViewModel>
+    public class UpdateProjectCommand : IRequest<Result>
     {
         public int IdProject { get; set; }
         public string Title { get; set; }

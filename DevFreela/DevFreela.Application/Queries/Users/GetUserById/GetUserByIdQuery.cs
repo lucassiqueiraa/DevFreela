@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DevFreela.Application.Queries.Users.GetUserById
 {
-    public class GetUserByIdQuery : IRequest<ResultViewModel<UserViewModel>>
+    public class GetUserByIdQuery : IRequest<Result<UserViewModel>>
     {
         public GetUserByIdQuery(int id)
         {

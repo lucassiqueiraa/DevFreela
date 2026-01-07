@@ -31,6 +31,12 @@ namespace DevFreela.Infrastructure.Persistence.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<bool> ExistsAsync(int id)
+        {
+            return await _context.Users.AnyAsync(u => u.Id == id);
+
+        }
+
         public async Task<User?> GetByIdAsync(int id)
         {
             return await _context.Users

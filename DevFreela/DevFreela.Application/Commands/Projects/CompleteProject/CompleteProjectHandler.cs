@@ -6,26 +6,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DevFreela.Application.Commands.Projects.CompleteProject
 {
-    public class CompleteProjectHandler : IRequestHandler<CompleteProjectCommand, ResultViewModel>
+    public class CompleteProjectHandler : IRequestHandler<CompleteProjectCommand, Result>
     {
         private readonly IProjectRepository _repository;
         public CompleteProjectHandler(IProjectRepository repository)
         {
             _repository = repository;
         }
-        public async Task<ResultViewModel> Handle(CompleteProjectCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(CompleteProjectCommand request, CancellationToken cancellationToken)
         {
             var project = await _repository.GetByIdAsync(request.Id);
 
             if (project is null)
             {
-                return ResultViewModel.Error("Projeto não encontrado.");
+                return Result.Failure(ErrorType.NotFound, "Projeto não encontrado.");
             }
 
             project.Complete();
             await _repository.UpdateAsync(project);
 
-            return ResultViewModel.Success();
+            return Result.Success();
         }
     }
 }

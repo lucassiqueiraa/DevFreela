@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace DevFreela.Application.Commands.Projects.InsertProject
 {
-    public class ValidateInsertProjectCommandBehavior : IPipelineBehavior<InsertProjectCommand, ResultViewModel<int>>
+    public class ValidateInsertProjectCommandBehavior : IPipelineBehavior<InsertProjectCommand, Result<int>>
     {
         private readonly DevFreelaDbContext _context;
         public ValidateInsertProjectCommandBehavior(DevFreelaDbContext context)
@@ -18,14 +18,14 @@ namespace DevFreela.Application.Commands.Projects.InsertProject
             _context = context;
 
         }
-        public async Task<ResultViewModel<int>> Handle(InsertProjectCommand request, RequestHandlerDelegate<ResultViewModel<int>> next, CancellationToken cancellationToken)
+        public async Task<Result<int>> Handle(InsertProjectCommand request, RequestHandlerDelegate<Result<int>> next, CancellationToken cancellationToken)
         {
             var clientExists = await _context.Users.FindAsync(request.IdClient);
             var freelancerExists = await _context.Users.FindAsync(request.IdFreelancer);
 
              if (clientExists == null || freelancerExists == null)
             {
-                return ResultViewModel<int>.Error("Client or Freelancer not found");
+                return Result<int>.Failure(ErrorType.NotFound ,"Client or Freelancer not found");
             }
 
 

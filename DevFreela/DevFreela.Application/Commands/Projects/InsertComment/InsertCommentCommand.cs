@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DevFreela.Application.Commands.Projects.InsertComment
 {
-    public class InsertCommentCommand : IRequest<ResultViewModel>
+    public class InsertCommentCommand : IRequest<Result>
     {
         public string Content { get; set; }
         public int IdProject { get; set; }

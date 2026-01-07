@@ -12,6 +12,7 @@ namespace DevFreela.Core.Repositories
         Task<int> AddAsync(User user);
         Task AddSkillsAsync(List<UserSkill> userSkills);
         Task<User?> GetByIdAsync(int id);
+        Task<bool> ExistsAsync(int id);
 
     }
 }

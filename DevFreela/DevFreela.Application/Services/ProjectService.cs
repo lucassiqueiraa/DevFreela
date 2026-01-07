@@ -11,39 +11,39 @@ namespace DevFreela.Application.Services
         {
             _dbContext = context;
         }
-        public ResultViewModel Complete(int id)
+        public Result Complete(int id)
         {
             var project = _dbContext.Projects.SingleOrDefault(p => p.Id == id); //project trackeado
 
             if (project is null)
             {
-                return ResultViewModel.Error("Projeto não encontrado.");
+                return Result.Failure(ErrorType.NotFound, "Projeto não encontrado.");
             }
 
             project.Complete();
             _dbContext.Projects.Update(project);
             _dbContext.SaveChanges();
 
-            return ResultViewModel.Success();
+            return Result.Success();
         }
 
-        public ResultViewModel Delete(int id)
+        public Result Delete(int id)
         {
             var project = _dbContext.Projects.SingleOrDefault(p => p.Id == id); //project trackeado
 
             if (project is null)
             {
-                return ResultViewModel.Error("Projeto não encontrado.");
+                return Result.Failure(ErrorType.NotFound, "Projeto não encontrado.");
             }
 
             project.SetAsDeleted();
             _dbContext.Projects.Update(project);
             _dbContext.SaveChanges();
 
-            return ResultViewModel.Success();
+            return Result.Success();
         }
 
-        public ResultViewModel<List<ProjectItemViewModel>> GetAll(string search = "", int page = 0, int size = 3)
+        public Result<List<ProjectItemViewModel>> GetAll(string search = "", int page = 0, int size = 3)
         {
             var projects = _dbContext.Projects
                 .Include(p => p.Client)
@@ -57,10 +57,10 @@ namespace DevFreela.Application.Services
                 .Select(ProjectItemViewModel.FromEntity)
                 .ToList();
 
-            return ResultViewModel<List<ProjectItemViewModel>>.Success(model);
+            return Result<List<ProjectItemViewModel>>.Success(model);
         }
 
-        public ResultViewModel<ProjectViewModel> GetById(int id)
+        public Result<ProjectViewModel> GetById(int id)
         {
             var project = _dbContext.Projects
                 .Include(p => p.Client)
@@ -70,31 +70,31 @@ namespace DevFreela.Application.Services
 
             if(project is null)
             {
-                return ResultViewModel<ProjectViewModel>.Error("Projeto não existe.");
+                return Result<ProjectViewModel>.Failure(ErrorType.NotFound, "Projeto não encontrado.");
             }
 
             var model = ProjectViewModel.FromEntity(project);
 
-            return ResultViewModel<ProjectViewModel>.Success(model);
+            return Result<ProjectViewModel>.Success(model);
         }
 
-        public ResultViewModel<int> Insert(CreateProjectInputModel model)
+        public Result<int> Insert(CreateProjectInputModel model)
         {
             var project = model.ToEntity();
 
             _dbContext.Projects.Add(project);
             _dbContext.SaveChanges();
 
-            return ResultViewModel<int>.Success(project.Id);
+            return Result<int>.Success(project.Id);
         }
 
-        public ResultViewModel InsertComment(int id, CreateProjectCommentInputModel model)
+        public Result InsertComment(int id, CreateProjectCommentInputModel model)
         {
             var project = _dbContext.Projects.SingleOrDefault(p => p.Id == id);
 
             if (project is null)
             {
-                return ResultViewModel.Error("Projeto não encontrado.");
+                return Result.Failure(ErrorType.NotFound, "Projeto não encontrado.");
             }
 
             var comment = model.ToEntity();
@@ -102,32 +102,32 @@ namespace DevFreela.Application.Services
             _dbContext.ProjectComments.Add(comment);
             _dbContext.SaveChanges();
 
-            return ResultViewModel.Success();   
+            return Result.Success();   
         }
 
-        public ResultViewModel Start(int id)
+        public Result Start(int id)
         {
             var project = _dbContext.Projects.SingleOrDefault(p => p.Id == id); //project trackeado
 
             if (project is null)
             {
-                return ResultViewModel.Error("Projeto não encontrado.");
+                return Result.Failure(ErrorType.NotFound, "Projeto não encontrado.");
             }
 
             project.Start();
             _dbContext.Projects.Update(project);
             _dbContext.SaveChanges();
 
-            return ResultViewModel.Success();
+            return Result.Success();
         }
 
-        public ResultViewModel Update(UpdateProjectInputModel model)
+        public Result Update(UpdateProjectInputModel model)
         {
             var project = _dbContext.Projects.SingleOrDefault(p => p.Id == model.IdProject); //project trackeado
 
             if (project is null)
             {
-                return ResultViewModel.Error("Projeto não encontrado.");
+                return Result.Failure(ErrorType.NotFound ,"Projeto não encontrado.");
             }
 
             project.Update(model.Title, model.Description, model.TotalCost); //talvez desnecessário pq ja está trackeado
@@ -135,7 +135,7 @@ namespace DevFreela.Application.Services
             _dbContext.Projects.Update(project);
             _dbContext.SaveChanges();
 
-            return ResultViewModel.Success();
+            return Result.Success();
         }
     }
 

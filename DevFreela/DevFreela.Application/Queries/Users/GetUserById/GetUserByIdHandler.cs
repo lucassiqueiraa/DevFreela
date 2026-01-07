@@ -11,25 +11,25 @@ using System.Threading.Tasks;
 
 namespace DevFreela.Application.Queries.Users.GetUserById
 {
-    public class GetUserByIdHandler : IRequestHandler<GetUserByIdQuery, ResultViewModel<UserViewModel>>
+    public class GetUserByIdHandler : IRequestHandler<GetUserByIdQuery, Result<UserViewModel>>
     {
         private readonly IUserRepository _repository;
         public GetUserByIdHandler(IUserRepository repository)
         {
             _repository = repository;
         }
-        public async Task<ResultViewModel<UserViewModel>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
+        public async Task<Result<UserViewModel>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
         {
             var user = await _repository.GetByIdAsync(request.Id);
 
             if (user == null)
             {
-                return ResultViewModel<UserViewModel>.Error("User not found");
+                return Result<UserViewModel>.Failure(ErrorType.NotFound, "User not found");
             }
 
             var model = UserViewModel.FromEntity(user);
 
-            return ResultViewModel<UserViewModel>.Success(model);
+            return Result<UserViewModel>.Success(model);
 
         }
 

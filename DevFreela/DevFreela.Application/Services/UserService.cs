@@ -17,7 +17,7 @@ namespace DevFreela.Application.Services
         {
             _dbContext = dbContext;
         }
-        public ResultViewModel<UserViewModel> GetById(int id)
+        public Result<UserViewModel> GetById(int id)
         {
             var user = _dbContext.Users
                 .Include(u => u.Skills)
@@ -26,30 +26,30 @@ namespace DevFreela.Application.Services
 
             if (user == null)
             {
-                return ResultViewModel<UserViewModel>.Error("Usuário não encontrado.");
+                return Result<UserViewModel>.Failure(ErrorType.NotFound, "Usuário não encontrado.");
             }
 
             var model = UserViewModel.FromEntity(user);
 
-            return ResultViewModel<UserViewModel>.Success(model);
+            return Result<UserViewModel>.Success(model);
 
         }
 
-        public ResultViewModel<int> Insert(CreateUserInputModel model)
+        public Result<int> Insert(CreateUserInputModel model)
         {
             var user = model.ToEntity();
 
             _dbContext.Users.Add(user);
             _dbContext.SaveChanges();
 
-            return ResultViewModel<int>.Success(user.Id);
+            return Result<int>.Success(user.Id);
         }
 
-        public ResultViewModel<int> InsertSkill(int userId, UserSkillsInputModel model)
+        public Result<int> InsertSkill(int userId, UserSkillsInputModel model)
         {
             if (!_dbContext.Users.Any(u => u.Id == userId))
             {
-                return ResultViewModel<int>.Error("Usuário não encontrado.");
+                return Result<int>.Failure(ErrorType.NotFound, "Usuário não encontrado.");
             }
 
             var userSkill = model.SkillIds.Select(skillId => new UserSkill(userId, skillId)).ToList();
@@ -57,7 +57,7 @@ namespace DevFreela.Application.Services
             _dbContext.UserSkills.AddRange(userSkill);
             _dbContext.SaveChanges();
 
-           return ResultViewModel<int>.Success(userId);
+           return Result<int>.Success(userId);
         }
     }
 }

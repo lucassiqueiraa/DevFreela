@@ -29,12 +29,16 @@ namespace DevFreela.API.Controllers
         {
             var result = await _mediator.Send(new GetUserByIdQuery(id));
 
-            if(!result.IsSuccess)
+            if(result.IsSuccess)
             {
-                return NotFound(result.Message);
+                return Ok(result);
             }
 
-            return Ok(result);
+            return result.Error switch
+            {
+                { Code: ErrorType.NotFound } => NotFound(result.Error.Description),
+                _ => StatusCode(500, result.Error?.Description)
+            };
         }
 
         //POST api/users
@@ -45,10 +49,14 @@ namespace DevFreela.API.Controllers
 
             if(!result.IsSuccess)
             {
-                return BadRequest(result.Message);
+                return CreatedAtAction(nameof(GetByIdAsync), new { id = result.Data }, result);
             }
 
-            return CreatedAtAction(nameof(GetByIdAsync), new { id = result.Data }, result);
+            return result.Error switch
+            {
+                { Code: ErrorType.Validation } => BadRequest(result.Error.Description),
+                _ => StatusCode(500, result.Error?.Description)
+            };
         }
 
         [HttpPost("{id}/skills")]
@@ -56,12 +64,17 @@ namespace DevFreela.API.Controllers
         {
             var result = await _mediator.Send(new InsertUserSkillCommand(id, model.SkillIds));
 
-            if (!result.IsSuccess)
+            if (result.IsSuccess)
             {
-                return BadRequest(result.Message);
+                return NoContent();
             }
 
-            return NoContent();
+            return result.Error switch
+            {
+                { Code: ErrorType.Validation } => BadRequest(result.Error.Description),
+                { Code: ErrorType.NotFound } => NotFound(result.Error.Description),
+                _ => StatusCode(500, result.Error?.Description)
+            };
         }
 
         [HttpPut("{id}/profile-picture")]

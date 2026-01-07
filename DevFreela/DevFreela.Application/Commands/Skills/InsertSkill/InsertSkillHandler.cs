@@ -11,20 +11,28 @@ using System.Threading.Tasks;
 
 namespace DevFreela.Application.Commands.Skills.InsertSkill
 {
-    public class InsertSkillHandler : IRequestHandler<InsertSkillCommand, ResultViewModel<int>>
+    public class InsertSkillHandler : IRequestHandler<InsertSkillCommand, Result<int>>
     {
-        private readonly ISkillRepository _repostory;
+        private readonly ISkillRepository _repository;
         public InsertSkillHandler(ISkillRepository repository) 
         {
-            _repostory = repository;
+            _repository = repository;
         }
 
-        public async Task<ResultViewModel<int>> Handle(InsertSkillCommand request, CancellationToken cancellationToken)
+        public async Task<Result<int>> Handle(InsertSkillCommand request, CancellationToken cancellationToken)
         {
-            var skill = request.ToEntity();
-            await _repostory.AddSkillAsync(skill);
+            // TODO: Validate the description field (if it is empty or exceeds the maximum number of characters)
+            var exists = await _repository.ExistsByDescription(request.Description);
+            if (exists)
+            {
+                return Result<int>.Failure(ErrorType.Conflict, "This skill already exists");
+            }
 
-            return ResultViewModel<int>.Success(skill.Id);
+            var skill = request.ToEntity();
+
+            await _repository.AddSkillAsync(skill);
+
+            return Result<int>.Success(skill.Id);
         }
     }
 }
