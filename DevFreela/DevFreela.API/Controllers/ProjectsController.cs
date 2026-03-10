@@ -25,7 +25,16 @@ namespace DevFreela.API.Controllers
         public ProjectsController(IProjectService service, IMediator mediator)
         {
            _mediator = mediator;
-        }   
+        }
+
+        [HttpGet("test-error")]
+        public IActionResult GenerateError()
+        {
+            // Forçando um erro manual para testar o Handler
+            throw new Exception("Isto é um teste do Exception Handler!");
+
+           
+        }
 
         //GET api/projects?search=crm
         [HttpGet]
@@ -72,7 +81,7 @@ namespace DevFreela.API.Controllers
         [HttpPost]  
         public async Task<IActionResult> Post(InsertProjectCommand command)
         {
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command); 
 
 
             if (result.IsSuccess)

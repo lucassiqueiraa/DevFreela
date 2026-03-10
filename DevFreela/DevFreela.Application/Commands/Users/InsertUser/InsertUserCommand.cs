@@ -11,9 +11,9 @@ namespace DevFreela.Application.Commands.Users.InsertUser
 {
     public class InsertUserCommand : IRequest<Result<int>>
     {
-        public string FullName { get; private set; }
-        public string Email { get; private set; }
-        public DateTime BirthDate { get; private set; }
+        public string FullName { get; set; }
+        public string Email { get; set; }
+        public DateTime BirthDate { get; set; }
 
         public User ToEntity()
             => new User(FullName, Email, BirthDate, true);

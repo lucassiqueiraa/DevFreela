@@ -1,4 +1,5 @@
 using DevFreela.API.ExceptionHandler;
+using DevFreela.API.Extensions;
 using DevFreela.Application;
 using DevFreela.Infrastructure;
 using DevFreela.Infrastructure.Persistence;
@@ -28,11 +29,14 @@ builder.Services.AddCors(options =>
 
 
 builder.Services.AddControllers();
+builder.Services.AddCustomValidationResponse();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseExceptionHandler();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -41,9 +45,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.UseExceptionHandler();
 
-app.UseHttpsRedirection();
+
+//app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
 

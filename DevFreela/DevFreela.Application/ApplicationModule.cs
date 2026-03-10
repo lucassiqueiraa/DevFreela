@@ -1,6 +1,8 @@
 ﻿using DevFreela.Application.Commands.Projects.InsertProject;
 using DevFreela.Application.Models;
 using DevFreela.Application.Services;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -17,6 +19,7 @@ namespace DevFreela.Application
         {
             services.AddServices();
             services.AddHandlers();
+            services.AddValidation();
 
             return services;
         }
@@ -39,6 +42,15 @@ namespace DevFreela.Application
 
             return services;
          
+        }
+
+        private static IServiceCollection AddValidation(this IServiceCollection services)
+        {
+            services
+                .AddFluentValidationAutoValidation()
+                .AddValidatorsFromAssemblyContaining<InsertProjectCommand>();
+
+            return services;
         }
     }
 }
